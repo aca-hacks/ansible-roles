@@ -1,0 +1,15 @@
+- hosts: all 
+  gather_facts: true
+  tasks:
+
+    - include_role: { name: docker }
+      vars: 
+        docker_opts: ""
+
+    - include_role: { name: packages }
+
+    - include_role: { name: rsync-dir }
+      vars:
+        rsync_dir_delete: true
+        rsync_src: "~/src/configs/dotfiles.shared"
+        rsync_dest: "~/src/configs/dotfiles.shared"

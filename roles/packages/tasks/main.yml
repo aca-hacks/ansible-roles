@@ -1,0 +1,37 @@
+# list of available ansible_os_family
+# AIX
+# Alpine
+# Altlinux
+# Archlinux
+# Darwin
+# Debian
+# FreeBSD
+# Gentoo
+# HP-UX
+# Mandrake
+# RedHat
+# SGML
+# Slackware
+# Solaris
+# Suse
+# Windows
+
+
+- name: Install packages
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+    - vim
+  when:
+    ansible_os_family == "Debian"
+
+- name: Install packages
+  become: yes
+  yum:
+    name:
+      - nginx
+    state: present
+  when:
+    ansible_os_family == "RedHat"
+

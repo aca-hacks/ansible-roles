@@ -1,0 +1,25 @@
+- name: Check if docker exists
+  shell: command -v docker
+  register: docker_installed
+  ignore_errors: true
+
+- name: Install docker
+  when: docker_installed.rc != 0
+  raw: bash -c "curl -sS https://get.docker.com/ | sh"
+
+- name: usermod for docker
+  raw: sudo usermod -aG docker {{ ansible_user_id }}
+
+- name: update docker_options
+  register: docker_opts_updated
+  ansible.builtin.replace:
+    path: /usr/lib/systemd/system/docker.service
+    regexp: ^ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock.*$
+    replace: ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock {{ docker_opts }}
+
+- name: restart if docker_options changed
+  when: docker_opts_updated.changed
+  service:
+    name: docker
+    state: restarted
+  become: true

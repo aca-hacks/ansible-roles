@@ -1,0 +1,4 @@
+---
+rsync_dir_delete: false
+rsync_src: ""
+rsync_dest: ""

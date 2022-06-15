@@ -1,0 +1,29 @@
+- name: Install rsync
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+    - rsync
+  when:
+    ansible_os_family == "Debian"
+
+- name: Install rsync
+  become: yes
+  yum:
+    name:
+      - rsync
+    state: present
+  when:
+    ansible_os_family == "RedHat"
+
+- name: Create a directory if it does not exist
+  file:
+    path: "{{ rsync_dest }}"
+    state: directory
+
+- name: dotfiles
+  synchronize:
+    src: "{{ rsync_src }}/"
+    dest: "{{ rsync_dest }}/"
+    delete: "{{ rsync_dir_delete }}"
+    copy_links: yes
